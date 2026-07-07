@@ -6,8 +6,8 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 A single-page static portfolio site for Shahriyor Jo'rayev (digital marketing / Telegram blogging). Plain HTML/CSS/JS — no framework, no bundler, no package.json, no build step.
 
-Live site: https://shahriyorjurayev.github.io/portfolio/
-Deployed via GitHub Pages from the `main` branch (source path `/`), configured through the GitHub API (`repos/{owner}/{repo}/pages`), not a `gh-pages` branch or Pages UI toggle.
+Live site: https://shjurayev.uz/ (custom domain via Cloudflare DNS → Hetzner VPS, Nginx, Let's Encrypt TLS)
+Also mirrored at https://shahriyorjurayev.github.io/portfolio/ (GitHub Pages from the `main` branch, source path `/`, configured through the GitHub API `repos/{owner}/{repo}/pages` rather than a `gh-pages` branch or Pages UI toggle) — kept as a fallback, not the primary target.
 
 ## Commands
 
@@ -19,10 +19,17 @@ python3 -m http.server 8420
 
 (matches the debug config in `.claude/launch.json`, which runs the same command on port 8420).
 
-Deploying is just committing to `main` and pushing — GitHub Pages rebuilds automatically:
+Deploying to GitHub Pages is just committing to `main` and pushing — it rebuilds automatically:
 
 ```
 git add -A && git commit -m "..." && git push origin main
+```
+
+The VPS (`shjurayev.uz`) serves a separate `git clone` of this repo at `/var/www/shjurayev.uz` on the Hetzner server (user `shahriyor`, IP `77.42.27.88`). It does **not** auto-deploy on push — after pushing, SSH in and pull:
+
+```
+ssh shahriyor@77.42.27.88
+cd /var/www/shjurayev.uz && git pull
 ```
 
 ## Architecture
@@ -41,4 +48,4 @@ git add -A && git commit -m "..." && git push origin main
 
 - Contact/social links (Telegram `t.me/jsh_uz`, Instagram, YouTube) are hardcoded in `index.html` in multiple places (header logo, hero CTA, social section, footer) — update all occurrences together.
 - Project cards in the `#projects` marquee reference images in `assets/images/`; removing an image file without removing/updating its `<img src>` in `index.html` leaves a broken image live on the site.
-- `sitemap.xml` and `robots.txt` reference the production URL — keep in sync if the domain changes (note `og:url` in `index.html` still points to a `netlify.app` URL from a prior deploy target).
+- `sitemap.xml`, `robots.txt`, and `og:url` in `index.html` all reference the production URL (`https://shjurayev.uz`) — keep in sync if the domain changes.
