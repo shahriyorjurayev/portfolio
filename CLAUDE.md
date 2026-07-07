@@ -25,7 +25,7 @@ Deploying to GitHub Pages is just committing to `main` and pushing — it rebuil
 git add -A && git commit -m "..." && git push origin main
 ```
 
-The VPS (`shjurayev.uz`) serves a separate `git clone` of this repo at `/var/www/shjurayev.uz` on the Hetzner server (user `shahriyor`, IP `77.42.27.88`). It does **not** auto-deploy on push — after pushing, SSH in and pull:
+The VPS (`shjurayev.uz`) serves a separate `git clone` of this repo at `/var/www/shjurayev.uz` on the Hetzner server (user `shahriyor`, IP `77.42.27.88`, Nginx + Let's Encrypt TLS). `.github/workflows/deploy.yml` auto-deploys on every push to `main`: it SSHes in with a dedicated, restricted deploy key (GitHub secrets `DEPLOY_HOST`/`DEPLOY_USER`/`DEPLOY_SSH_KEY`) and runs `git pull` in that directory. The key's `authorized_keys` entry on the VPS has a forced `command=` restriction, so it can only ever run that one `git pull` — nothing else, regardless of what the workflow sends. If the auto-deploy ever needs to be run manually:
 
 ```
 ssh shahriyor@77.42.27.88
